@@ -20,10 +20,12 @@ tick marks, and a peak-hold line.
 | --- | --- |
 | Microcontroller | Any I²C-capable Arduino (e.g. Uno / Nano) |
 | Display | 128×64 **SH1106** OLED, I²C address `0x3C` |
-| Pressure sensor | I²C pressure transducer at address `0x28` with the Honeywell-style 10–90% transfer function (e.g. Honeywell ABP/HSC/SSC series), full-scale ≈ 145 psi (10 bar) |
+| Pressure sensor | Honeywell **ABPDANN010BG2A3** — 0–10 bar (≈145 psi) gauge, I²C, **3.3 V**, address `0x28` |
 
-> The sensor part number and exact full-scale range are inferred from the code's
-> calibration constants — adjust `MAX_SENSOR_PRESSURE` if your sensor differs.
+> The sketch's calibration constants match this sensor's 10–90% transfer
+> function and 10 bar range. Using a different sensor? Update
+> `MAX_SENSOR_PRESSURE` (and the address / transfer function) to match its
+> datasheet.
 
 ### Wiring
 
@@ -31,13 +33,17 @@ Both devices share the same I²C bus. Connect each to the Arduino's I²C pins:
 
 | Device pin | Arduino (Uno/Nano) |
 | --- | --- |
-| VCC | 5V (or 3.3V per your sensor/display) |
+| VCC | 3.3 V / 5 V — see note |
 | GND | GND |
 | SDA | A4 |
 | SCL | A5 |
 
 On other boards use that board's SDA/SCL pins. Plumb the pressure sensor's port
 to the intake manifold / charge pipe you want to measure.
+
+> ⚠️ The ABPDANN010BG2A3 is a **3.3 V** part (the `…A3` suffix) — power it from
+> 3.3 V, not 5 V. Most SH1106 OLED modules accept 5 V; check yours. A 3.3 V board
+> (e.g. Teensy) drives both directly.
 
 ## Libraries
 
